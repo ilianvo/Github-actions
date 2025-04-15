@@ -21,13 +21,13 @@ jobs:
 
       - name: 🛠 Build and tag Docker image
         run: |
-          IMAGE_NAME=dockerhub-ilianvo/pipe-app
+          IMAGE_NAME=${{ secrets.DOCKERHUB_USERNAME }}/pipe-app
           GIT_SHA=$(echo $GITHUB_SHA | cut -c1-7)
           docker build -t $IMAGE_NAME:latest -t $IMAGE_NAME:$GIT_SHA .
 
       - name: 📤 Push Docker image
         run: |
-          IMAGE_NAME=dockerhub-ilianvo/pipe-app
+          IMAGE_NAME=${{ secrets.DOCKERHUB_USERNAME }}/pipe-app
           GIT_SHA=$(echo $GITHUB_SHA | cut -c1-7)
           docker push $IMAGE_NAME:latest
           docker push $IMAGE_NAME:$GIT_SHA
