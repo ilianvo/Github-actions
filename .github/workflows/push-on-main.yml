@@ -1,12 +1,12 @@
-name: Build and Push to Docker Hub
+name: Build and Push Docker Image + Update GitOps
 
 on:
   push:
-    branches:
-      - main
+    tags:
+      - 'v*'
 
 jobs:
-  build:
+  deploy:
     runs-on: self-hosted
 
     steps:
@@ -19,15 +19,30 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: 🛠 Build and tag Docker image
+      - name: 🛠 Build & Tag Image
         run: |
           IMAGE_NAME=${{ secrets.DOCKERHUB_USERNAME }}/pipe-app
-          GIT_SHA=$(echo $GITHUB_SHA | cut -c1-7)
-          docker build -t $IMAGE_NAME:latest -t $IMAGE_NAME:$GIT_SHA .
+          TAG_NAME=${GITHUB_REF##*/}
+          docker build -t $IMAGE_NAME:$TAG_NAME .
+          docker push $IMAGE_NAME:$TAG_NAME
 
-      - name: 📤 Push Docker image
+      - name: 🔄 Checkout GitOps repo
+        uses: actions/checkout@v3
+        with:
+          repository: your-org/gitops-repo
+          token: ${{ secrets.GITHUB_TOKEN }}
+          path: gitops-repo
+
+      - name: ✍ Update values.yaml with tag
         run: |
-          IMAGE_NAME=${{ secrets.DOCKERHUB_USERNAME }}/pipe-app
-          GIT_SHA=$(echo $GITHUB_SHA | cut -c1-7)
-          docker push $IMAGE_NAME:latest
-          docker push $IMAGE_NAME:$GIT_SHA
+          TAG_NAME=${GITHUB_REF##*/}
+          sed -i "s/tag: .*/tag: \"$TAG_NAME\"/" GitOps-repo/helm/pipe-app/values.yaml
+
+      - name: 📦 Commit & Push to GitOps
+        run: |
+          cd gitops-repo
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add .
+          git commit -m "Update pipe-app image tag to $TAG_NAME"
+          git push origin main
