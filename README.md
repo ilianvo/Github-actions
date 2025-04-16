@@ -1,6 +1,9 @@
-###Pipe App Deployment Pipeline
+## Pipe App Deployment Pipeline
 
-#This project demonstrates a CI/CD pipeline where a Dockerized application is automatically built, pushed to Docker Hub, and deployed to a Kubernetes cluster using Helm and Argo CD. The pipeline uses GitHub Actions to automate the build and deployment process.
+# This project demonstrates a CI/CD pipeline where a Dockerized application is automatically built, pushed to Docker Hub, and deployed to a Kubernetes cluster using Helm and Argo CD. The pipeline uses GitHub Actions to automate the build and deployment process.
+
+
+
 🛠️ Technologies Used
 
     GitHub Actions for CI/CD
