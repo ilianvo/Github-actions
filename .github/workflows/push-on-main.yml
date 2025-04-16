@@ -40,7 +40,7 @@ jobs:
 
       - name: 📦 Commit & Push to GitOps
         run: |
-          cd gitops-repo
+          cd GitOps-repo
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
           git add .
