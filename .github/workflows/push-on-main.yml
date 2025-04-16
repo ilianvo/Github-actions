@@ -29,9 +29,9 @@ jobs:
       - name: 🔄 Checkout GitOps repo
         uses: actions/checkout@v3
         with:
-          repository: your-org/gitops-repo
+          repository: ilianvo/GitOps-repo
           token: ${{ secrets.GITHUB_TOKEN }}
-          path: gitops-repo
+          path: GitOps-repo
 
       - name: ✍ Update values.yaml with tag
         run: |
